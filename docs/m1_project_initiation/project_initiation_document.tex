@@ -1,0 +1,165 @@
+\documentclass[12pt]{article}
+%\usepackage{fullpage} IF 
+\usepackage[a4paper, margin=1in]{geometry} % this one is less ugly 
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{setspace}
+\usepackage{pgfgantt}
+
+\doublespacing
+
+\begin{document}
+
+\title{Project Initiation Document: Remaining time prediction}
+\author{Group 1: Lev Fedotov, Mariia Vashchenko, Kiarash Kowsari}
+\date{October 2026}
+\maketitle
+\pagebreak
+\tableofcontents
+%--INTRODUCTION--%
+\section{Introduction}
+In this project, we aim to implement software for remaining time prediction for the [A1 GmbH], which is a consulting
+company wanting to optimize their service. This initiation document contains
+every detail for initiating this project. \\
+In chapter \textbf{2}, the business cases, for which the product will be developed, will
+be presented. The nancial importance of our product for the client will be
+explained and two scenarios where our product can be used to improve the
+service provided by the A1 GmbH will be listed. \\ 
+In chapter \textbf{3}, to discuss the feasibility of our product, the concepts and tools
+that will be used to implement our product will be introduced. Two use cases
+will also be given to show the applicability of our product. \\
+In chapter \textbf{4}, a GANTT chart outlining the time frame of our project, and its
+explanation will be provided. \\ 
+In chapter \textbf{5}, tools that will be used in this project and the reason why we
+choose to use these tools will be given.
+In the \textbf{6}th chapter, an overview of our development team will be provided, which
+contains information about our background, academic interests, strengths, and
+weaknesses as well as the roles assigned to each member of our team.
+In the last chapter, we will  
+\section{Business Case}
+\subsection{Client}
+\section{Feasibility Study}
+\subsection{Theoretical and Technical Feasibility}
+\subsection{Use Cases}
+\subsubsection{Python}
+\section{Project charter}
+
+\definecolor{barblue}{RGB}{153,204,254}
+\definecolor{groupblue}{RGB}{51,102,254}
+\definecolor{linkred}{RGB}{165,0,33}
+\setganttlinklabel{s-s}{START-TO-START}
+\setganttlinklabel{f-s}{FINISH-TO-START}
+\setganttlinklabel{f-f}{FINISH-TO-FINISH}
+\begin{ganttchart}[
+    canvas/.append style={fill=none, draw=black!5, line width=.75pt},
+    hgrid style/.style={draw=black!5, line width=.75pt},
+    vgrid={*1{draw=black!5, line width=.75pt}},
+    today=7,
+    today rule/.style={
+      draw=black!64,
+      dash pattern=on 3.5pt off 4.5pt,
+      line width=1.5pt
+    },
+    today label font=\small\bfseries,
+    title/.style={draw=none, fill=none},
+    title label font=\bfseries\footnotesize,
+    title label node/.append style={below=7pt},
+    include title in canvas=false,
+    bar label font=\mdseries\small\color{black!70},
+    bar label node/.append style={left=2cm},
+    bar/.append style={draw=none, fill=black!63},
+    bar incomplete/.append style={fill=barblue},
+    bar progress label font=\mdseries\footnotesize\color{black!70},
+    group incomplete/.append style={fill=groupblue},
+    group left shift=0,
+    group right shift=0,
+    group height=.5,
+    group peaks tip position=0,
+    group label node/.append style={left=.6cm},
+    group progress label font=\bfseries\small,
+    link/.style={-latex, line width=1.5pt, linkred},
+    link label font=\scriptsize\bfseries,
+    link label node/.append style={below left=-2pt and 0pt}
+  ]{1}{13}
+  \gantttitle[
+    title label node/.append style={below left=7pt and -3pt}
+  ]{WEEKS:\quad1}{1}
+  \gantttitlelist{2,...,13}{1} \\
+  \ganttgroup[progress=57]{WBS 1 Summary Element 1}{1}{10} \\
+  \ganttbar[
+    progress=75,
+    name=WBS1A
+  ]{\textbf{WBS 1.1} Activity A}{1}{8} \\
+  \ganttbar[
+    progress=67,
+    name=WBS1B
+  ]{\textbf{WBS 1.2} Activity B}{1}{3} \\
+  \ganttbar[
+    progress=50,
+    name=WBS1C
+  ]{\textbf{WBS 1.3} Activity C}{4}{10} \\
+  \ganttbar[
+    progress=0,
+    name=WBS1D
+  ]{\textbf{WBS 1.4} Activity D}{4}{10} \\[grid]
+  \ganttgroup[progress=0]{WBS 2 Summary Element 2}{4}{10} \\
+  \ganttbar[progress=0]{\textbf{WBS 2.1} Activity E}{4}{5} \\
+  \ganttbar[progress=0]{\textbf{WBS 2.2} Activity F}{6}{8} \\
+  \ganttbar[progress=0]{\textbf{WBS 2.3} Activity G}{9}{10}
+  \ganttlink[link type=s-s]{WBS1A}{WBS1B}
+  \ganttlink[link type=f-s]{WBS1B}{WBS1C}
+  \ganttlink[
+    link type=f-f,
+    link label node/.append style=left
+  ]{WBS1C}{WBS1D}
+\end{ganttchart}
+
+\begin{itemize}
+    \item MILESTONE 2
+    \item MILESTONE 3
+    \item MILESTONE 4
+    \item MILESTONE 5
+\end{itemize}
+
+
+\section{Tools}
+\subsection{Gitlab of the RWTH Aachen Univeristy}
+RWTH Aachen is a member university of NFDI4Ing and the students have
+the admission to use DFN AAI Single Sign-On to create projects and groups.
+We use GitLab of the RWTH Aachen University to manage our own Gitrepository so that each team member has access to our project and to
+increase the quality of the code. Besides, this website has other functions as
+an issue-tracking-system, a wiki, and an option to review codes. The
+advantage of utilizing GitLab is that external users can authenticate via
+GitHub, however, they do not have the access to create groups and proj
+\section{Team}
+\subsection{Personal description}
+\subsubsection{Lev Fedotov}
+I am a B.Sc Computer Science student at RWTH Aachen University in my 5th semester, with my electives mostly being in math and psychology. Right now I am also employed as a research assistant at Fraunhofer Research Institution for Battery Cell Production FFB, primarily doing full stack development for a manufacturing execution system. Although most of my practical experience is in web development, my academic interests remain quite broad so I am eager to explore subfields I have not yet engaged with. I haven't engaged before  . In this practicum, my aim is to contribute to the project’s success while learning to apply my existing theoretical knowledge in a more practical, real-world like setting, which could help me in other areas of CS and more specifically in my current niche of digital production planning.
+\subsubsection{Mariia Vaschenko}
+[please write before  the meeting on 2.11.26]
+
+\subsubsection{Kiarash Kowsari}
+[please write before  the meeting on 2.11.26]
+
+\subsection{Roles}
+[DISCUSS IN THE MEETING ON 2.11.26]
+%--BIBLIOGRAPHY--%
+\section{Phase review}
+\subsection{Lev Fedotov}
+It was very stupid of me to miss the first team specific meeting // TODO REWRITE
+[please write after   the meeting on 2.11.26]
+
+\subsection{Mariia Vaschenko}
+[please write after   the meeting on 2.11.26]
+
+\subsection{Kiarash Kowsari}
+[please write after  the meeting on 2.11.26]
+
+\begin{thebibliography}{99}
+
+\bibitem{SampleBibLabel} Team0, "Title",  Journal, Volume, Pages, Year. 
+
+\end{thebibliography}
+
+\end{document}
