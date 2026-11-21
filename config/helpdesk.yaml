@@ -1,0 +1,17 @@
+# Help desk log of an Italian software company
+# 4TU.ResearchData, M. Polato, 2017, DOI 10.4121/uuid:0c60edf1-6f83-4e75-9367-4c63b3e9d5bb
+name: helpdesk
+path: data/help-desk-log.csv
+
+columns:
+  case_id: "Case ID"
+  activity: "Activity"
+  timestamp: "Complete Timestamp"
+
+timestamp_format: "%Y/%m/%d %H:%M:%S.%f"
+
+# Attributes that stay constant within a case.
+static_attributes: [customer, product, responsible_section, support_section]
+
+# Not used on purpose: "Variant", "Variant index" (they describe the complete
+# case, including events that happen later, and would leak the future).

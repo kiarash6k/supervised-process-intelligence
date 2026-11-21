@@ -112,8 +112,9 @@ def validate_event_log(event_log, config):
         config (dict): The dataset configuration with a "columns" section.
 
     Raises:
-        EventLogError: If the log has no events, or if one of the case, activity
-            or timestamp columns named in the configuration is missing.
+        EventLogError: If the log has no events, or if one of the case, activity,
+            timestamp or static attribute columns named in the configuration is
+            missing.
     """
     if event_log.empty:
         raise EventLogError("The event log is empty.")
@@ -123,6 +124,7 @@ def validate_event_log(event_log, config):
         config["columns"]["activity"],
         config["columns"]["timestamp"],
     ]
+    required += list(config.get("static_attributes") or [])
     missing = [name for name in required if name not in event_log.columns]
     if missing:
         raise EventLogError(
@@ -185,3 +187,39 @@ def sort_events(event_log):
     event_log = event_log.assign(**{position: np.arange(len(event_log))})
     event_log = event_log.sort_values([CASE_ID, TIMESTAMP, position])
     return event_log.drop(columns=position).reset_index(drop=True)
+
+
+def load_dataset(config_path):
+    """
+    Load an event log through its dataset configuration and normalize it.
+
+    The steps are: read the configuration, load the file, validate it, rename
+    the case, activity and timestamp columns to the standard names, parse the
+    timestamps, and sort the events by case and time. Only the three standard
+    columns and the static attributes named in the configuration are kept, so
+    columns such as "Variant" (which describe the whole case, including its
+    future) never reach the features.
+
+    Args:
+        config_path (str or Path): The path to the dataset configuration (YAML).
+
+    Returns:
+        pd.DataFrame: The normalized event log with the columns CASE_ID,
+            ACTIVITY, TIMESTAMP and the static attributes.
+
+    Raises:
+        EventLogError: If the log is empty, a configured column is missing, or
+            a timestamp cannot be parsed.
+        ValueError: If the configuration or the log has an unsupported format.
+    """
+    config = load_config(config_path)
+
+    event_log = load_event_log(config["path"])
+    validate_event_log(event_log, config)
+
+    event_log = standardize_columns(event_log, config)
+    event_log = parse_timestamps(event_log, config)
+    event_log = sort_events(event_log)
+
+    static_attributes = list(config.get("static_attributes") or [])
+    return event_log[[CASE_ID, ACTIVITY, TIMESTAMP, *static_attributes]]
