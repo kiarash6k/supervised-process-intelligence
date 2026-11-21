@@ -6,10 +6,24 @@ from src.data_loading import (
     ACTIVITY,
     CASE_ID,
     TIMESTAMP,
+    EventLogError,
     load_config,
     load_event_log,
+    parse_timestamps,
+    sort_events,
     standardize_columns,
+    validate_event_log,
 )
+
+CONFIG = {
+    "columns": {"case_id": "case", "activity": "act", "timestamp": "time"},
+    "timestamp_format": "%Y-%m-%d %H:%M:%S",
+}
+
+
+def make_log(rows):
+    """Build a standardized event log from (case, activity, timestamp) rows."""
+    return pd.DataFrame(rows, columns=[CASE_ID, ACTIVITY, TIMESTAMP])
 
 
 def test_load_event_log_csv(tmp_path):
@@ -133,4 +147,92 @@ def test_load_config_invalid_format(tmp_path):
 
     with pytest.raises(ValueError, match="Unsupported file format"):
         load_config(path)
+
+
+def test_parse_timestamps_returns_datetimes():
+    event_log = make_log([("c1", "A", "2020-01-01 10:00:00")])
+
+    parsed = parse_timestamps(event_log, CONFIG)
+
+    assert pd.api.types.is_datetime64_any_dtype(parsed[TIMESTAMP])
+    assert parsed[TIMESTAMP].iloc[0] == pd.Timestamp("2020-01-01 10:00:00")
+    # the input is not modified
+    assert event_log[TIMESTAMP].iloc[0] == "2020-01-01 10:00:00"
+
+
+def test_parse_timestamps_uses_the_configured_format():
+    event_log = make_log([("c1", "A", "01/02/2020 10:00")])
+    config = {"timestamp_format": "%d/%m/%Y %H:%M"}
+
+    parsed = parse_timestamps(event_log, config)
+
+    assert parsed[TIMESTAMP].iloc[0] == pd.Timestamp("2020-02-01 10:00")
+
+
+def test_sort_events_orders_events_within_each_case_by_time():
+    event_log = parse_timestamps(
+        make_log(
+            [
+                ("c1", "C", "2020-01-03 10:00:00"),
+                ("c2", "A", "2020-01-01 09:00:00"),
+                ("c1", "A", "2020-01-01 10:00:00"),
+                ("c1", "B", "2020-01-02 10:00:00"),
+            ]
+        ),
+        CONFIG,
+    )
+
+    sorted_log = sort_events(event_log)
+
+    c1 = sorted_log[sorted_log[CASE_ID] == "c1"]
+    assert c1[ACTIVITY].tolist() == ["A", "B", "C"]
+    assert sorted_log.index.tolist() == [0, 1, 2, 3]
+
+
+def test_sort_events_keeps_the_file_order_for_tied_timestamps():
+    event_log = parse_timestamps(
+        make_log(
+            [
+                ("c1", "Y", "2020-01-02 10:00:00"),
+                ("c1", "X", "2020-01-02 10:00:00"),  # same time, X after Y in the file
+                ("c1", "A", "2020-01-01 10:00:00"),
+            ]
+        ),
+        CONFIG,
+    )
+
+    sorted_log = sort_events(event_log)
+
+    assert sorted_log[ACTIVITY].tolist() == ["A", "Y", "X"]
+
+
+def test_validate_event_log_accepts_a_valid_log():
+    event_log = pd.DataFrame(
+        {"case": ["c1"], "act": ["A"], "time": ["2020-01-01 10:00:00"]}
+    )
+
+    validate_event_log(event_log, CONFIG)  # must not raise
+
+
+def test_validate_event_log_rejects_an_empty_log():
+    event_log = pd.DataFrame(columns=["case", "act", "time"])
+
+    with pytest.raises(EventLogError, match="empty"):
+        validate_event_log(event_log, CONFIG)
+
+
+def test_validate_event_log_rejects_a_missing_column():
+    event_log = pd.DataFrame({"case": ["c1"], "time": ["2020-01-01 10:00:00"]})
+
+    with pytest.raises(EventLogError, match="act"):
+        validate_event_log(event_log, CONFIG)
+
+
+def test_parse_timestamps_rejects_an_unparsable_timestamp():
+    event_log = make_log(
+        [("c1", "A", "2020-01-01 10:00:00"), ("c1", "B", "not a date")]
+    )
+
+    with pytest.raises(EventLogError, match="not a date"):
+        parse_timestamps(event_log, CONFIG)
 
