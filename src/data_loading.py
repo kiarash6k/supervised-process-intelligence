@@ -14,7 +14,7 @@ class EventLogError(ValueError):
     """The event log is empty, has a missing column, or has an invalid timestamp."""
 
 
-def load_config(path):
+def load_config(path: str | Path) -> dict:
     """
     Load a YAML dataset configuration and return its content as a dictionary.
 
@@ -40,7 +40,7 @@ def load_config(path):
     return config
 
 
-def load_event_log(path):
+def load_event_log(path: str | Path) -> pd.DataFrame:
     """
     Load an event log from a CSV or XES file.
 
@@ -67,7 +67,7 @@ def load_event_log(path):
     return event_log
 
 
-def standardize_columns(event_log, config):
+def standardize_columns(event_log: pd.DataFrame, config: dict) -> pd.DataFrame:
     """
     Rename the case, activity and timestamp columns to the standard names.
 
@@ -103,7 +103,7 @@ def standardize_columns(event_log, config):
     return event_log.rename(columns=column_mapping)
 
 
-def validate_event_log(event_log, config):
+def validate_event_log(event_log: pd.DataFrame, config: dict) -> None:
     """
     Check a raw event log before its columns are renamed.
 
@@ -132,7 +132,7 @@ def validate_event_log(event_log, config):
         )
 
 
-def parse_timestamps(event_log, config):
+def parse_timestamps(event_log: pd.DataFrame, config: dict) -> pd.DataFrame:
     """
     Convert the timestamp column to datetimes.
 
@@ -170,7 +170,7 @@ def parse_timestamps(event_log, config):
     return event_log
 
 
-def sort_events(event_log):
+def sort_events(event_log: pd.DataFrame) -> pd.DataFrame:
     """
     Sort the events by case and then by timestamp.
 
@@ -189,7 +189,7 @@ def sort_events(event_log):
     return event_log.drop(columns=position).reset_index(drop=True)
 
 
-def load_dataset(config_path):
+def load_dataset(config_path: str | Path) -> pd.DataFrame:
     """
     Load an event log through its dataset configuration and normalize it.
 
