@@ -1,0 +1,14 @@
+# Test-only dataset: four tiny cases that never overlap in time (see
+# tests/test_synthetic_log.py for the exact values). The rows in the CSV are
+# shuffled on purpose, so the tests also check the sorting.
+name: synthetic
+path: tests/data/synthetic_log.csv
+
+columns:
+  case_id: "case"
+  activity: "activity"
+  timestamp: "timestamp"
+
+timestamp_format: "%Y-%m-%d %H:%M:%S"
+
+static_attributes: [customer]
