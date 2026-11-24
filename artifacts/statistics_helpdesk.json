@@ -1,0 +1,11 @@
+{
+  "cases": 4580,
+  "events": 21348,
+  "activities": 14,
+  "variants": 226,
+  "case_duration_days": {
+    "mean": 40.85840765000809,
+    "median": 39.85921875,
+    "max": 59.99496527777778
+  }
+}
