@@ -1,7 +1,7 @@
 """
 Prefixes
 """
-def extract_prefixes(log):
+def extract_prefixes(data: pd.DataFrame) -> list:
     """
     Extracts prefixes from the given text.
 
@@ -14,4 +14,4 @@ def extract_prefixes(log):
     # Placeholder implementation
     prefixes = []
     # Logic to extract prefixes goes here
-    return t po
+    return prefixes

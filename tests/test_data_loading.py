@@ -285,7 +285,6 @@ def test_load_dataset_rejects_a_missing_static_attribute(tmp_path):
 HELPDESK_LOG = Path("data/help-desk-log.csv")
 
 
-@pytest.mark.skipif(not HELPDESK_LOG.exists(), reason="Helpdesk log is not downloaded")
 def test_helpdesk_log_can_be_loaded_and_normalized():
     log = load_dataset("config/helpdesk.yaml")
 
