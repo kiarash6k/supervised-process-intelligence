@@ -7,7 +7,7 @@ columns:
   case_id: "Case ID"
   activity: "Activity"
   timestamp: "Complete Timestamp"
-
+  resource: "Resource"
 timestamp_format: "%Y/%m/%d %H:%M:%S.%f"
 
 # Attributes that stay constant within a case.

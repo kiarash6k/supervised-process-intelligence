@@ -8,7 +8,7 @@ import yaml
 CASE_ID = "case:concept:name"
 ACTIVITY = "concept:name"
 TIMESTAMP = "time:timestamp"
-
+RESOURCE = "org:resource"
 
 class EventLogError(ValueError):
     """The event log is empty, has a missing column, or has an invalid timestamp."""
@@ -77,7 +77,7 @@ def standardize_columns(event_log: pd.DataFrame, config: dict) -> pd.DataFrame:
           case_id: "Case ID"
           activity: "Activity"
           timestamp: "Complete Timestamp"
-
+          resource : "Resource"
     They are renamed to CASE_ID, ACTIVITY and TIMESTAMP. All other columns are
     kept unchanged. A column named in the configuration that does not exist in
     the event log is not reported here; call validate_event_log first.
@@ -98,6 +98,7 @@ def standardize_columns(event_log: pd.DataFrame, config: dict) -> pd.DataFrame:
         columns["case_id"]: CASE_ID,
         columns["activity"]: ACTIVITY,
         columns["timestamp"]: TIMESTAMP,
+        columns["resource"]: RESOURCE,
     }
 
     return event_log.rename(columns=column_mapping)
@@ -118,11 +119,11 @@ def validate_event_log(event_log: pd.DataFrame, config: dict) -> None:
     """
     if event_log.empty:
         raise EventLogError("The event log is empty.")
-
     required = [
         config["columns"]["case_id"],
         config["columns"]["activity"],
         config["columns"]["timestamp"],
+        config["columns"]["resource"],
     ]
     required += list(config.get("static_attributes") or [])
     missing = [name for name in required if name not in event_log.columns]
@@ -222,4 +223,4 @@ def load_dataset(config_path: str | Path) -> pd.DataFrame:
     event_log = sort_events(event_log)
 
     static_attributes = list(config.get("static_attributes") or [])
-    return event_log[[CASE_ID, ACTIVITY, TIMESTAMP, *static_attributes]]
+    return event_log[[CASE_ID, ACTIVITY, TIMESTAMP, RESOURCE, *static_attributes]]

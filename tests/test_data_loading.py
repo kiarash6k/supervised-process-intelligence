@@ -287,7 +287,6 @@ HELPDESK_LOG = Path("data/help-desk-log.csv")
 
 def test_helpdesk_log_can_be_loaded_and_normalized():
     log = load_dataset("config/helpdesk.yaml")
-
     assert log[CASE_ID].nunique() == 4580
     assert len(log) == 21348
     assert log[ACTIVITY].nunique() == 14

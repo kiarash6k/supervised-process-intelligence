@@ -26,8 +26,8 @@ def extract_labels(data: pd.DataFrame) -> list:
 
 if __name__ == "__main__":
     # Example usage    data = pd.DataFrame({
-    # do example with the proper relative path to C:\Users\fedoo\PycharmProjects\supervised-process-intelligence\data\help-desk-log.csv
-    data = load_dataset("C:\\Users\\fedoo\\PycharmProjects\\supervised-process-intelligence\\config\\helpdesk.yaml")
-    labels = extract_labels(data)
+    # do example with the proper relative path to
+    log = load_dataset("config/helpdesk.yaml")
+    labels = extract_labels(log)
     print("Extracted Labels:")
     print(labels)
