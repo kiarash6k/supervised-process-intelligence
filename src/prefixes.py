@@ -1,17 +1,33 @@
 """
 Prefixes
 """
-def extract_prefixes(data: pd.DataFrame) -> list:
+import pm4py
+import pandas as pd
+
+from data_loading import CASE_ID, TIMESTAMP
+REMAINING_TIME = "remaining_time"
+EVENTS = "events" # THERE is no
+
+def extract_prefixes(data: pd.DataFrame)-> pd.DataFrame:
     """
-    Extracts prefixes from the given text.
+    Extracts prefixes.
 
     Args:
-        text (str): The input text from which to extract prefixes.
+        data (pd.DataFrame): The input data from which to extract prefixes.
 
     Returns:
-        list: A list of extracted prefixes.
+        pd.DataFrame: A DataFrame with case ID, event list, and remaining time.
+        Each row contains a prefix (partial sequence of events) for a case.
     """
-    # Placeholder implementation
-    prefixes = []
-    # Logic to extract prefixes goes here
+    prefixes = pd.DataFrame()
+    for case_id, group in data.groupby(CASE_ID):
+        group = group.sort_values(by=TIMESTAMP)
+        for i in range(1, len(group)):
+            group_cut = group.iloc[:i]
+            processed_group_cut = group_cut.copy()
+            processed_group_cut.drop(columns=[CASE_ID], inplace=True)
+            group_as_dict = processed_group_cut.to_dict(orient='records')
+            prefix = {CASE_ID: [case_id], EVENTS: [group_as_dict],
+                      REMAINING_TIME: [(group[TIMESTAMP].max() - group_cut[TIMESTAMP].max()).total_seconds() / 3600]}
+            prefixes = pd.concat([prefixes, pd.DataFrame(prefix)], ignore_index=True)
     return prefixes

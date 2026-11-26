@@ -2,32 +2,33 @@
 Labels
 
 """
+from typing import cast
+
 import pandas as pd
 
-from data_loading import load_dataset
+from data_loading import load_dataset, CASE_ID, TIMESTAMP
 
 
-def compute_completetion_time(frame: pd.DataFrame):
+def append_completion_time_labels(data: pd.DataFrame) -> pd.DataFrame:
     """
-    Computes the completion time of each case in the event log.
+    Appends the completion time of each case in the event log.
+    (SUPPOSED TO FULFIL REQ-F08)
+    :param data: The event log as a pandas DataFrame.
+    :return: the same dataframe but with completion timestamp added to it
+    """
 
-    :param frame: The event log as a pandas DataFrame.
-    :return: Should it be a Dataframe? idk
-    """
-    # Group by case_id and find the maximum timestamp for each case
-    completion_times = frame.groupby('case_id')['timestamp'].max()
-    return completion_times
-def extract_labels(data: pd.DataFrame) -> list:
-    """
-    """
-    labels = data.groupby('case_id')['label'].unique()
-    # Logic to extract labels goes here
-    return labels
+    completion_times = data.groupby(CASE_ID)[TIMESTAMP].max()
+    data_with_completion = pd.merge(data, completion_times, on=CASE_ID, suffixes=('', '_completion'))
+    return data_with_completion
 
-if __name__ == "__main__":
-    # Example usage    data = pd.DataFrame({
-    # do example with the proper relative path to
-    log = load_dataset("config/helpdesk.yaml")
-    labels = extract_labels(log)
-    print("Extracted Labels:")
-    print(labels)
+def append_remaining_time_to_prefixes(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Appends remaining time to each prefix in the event log.
+    PREFIXES NEED TO BE EXTRACTED BEFORE THIS.
+    :param data: The prefixes as a pandas DataFrame.
+    :return: the same dataframe but with remaining time timestamp added to them
+    """
+
+    completion_times = data.groupby(CASE_ID)[TIMESTAMP].max()
+    data_with_completion = pd.merge(data, completion_times, on=CASE_ID, suffixes=('', '_completion'))
+    return data_with_completion

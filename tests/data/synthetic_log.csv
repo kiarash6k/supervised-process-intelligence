@@ -1,14 +1,14 @@
-case,activity,timestamp,customer,Variant
-c3,Check,2020-01-22 00:00:00,ann,V2
-c1,Register,2020-01-01 00:00:00,ann,V1
-c2,Register,2020-01-10 00:00:00,bob,V3
-c1,Approve,2020-01-04 00:00:00,ann,V1
-c4,Register,2020-02-01 00:00:00,cy,V1
-c3,Register,2020-01-20 00:00:00,ann,V2
-c1,Check,2020-01-02 00:00:00,ann,V1
-c2,Reject,2020-01-12 00:00:00,bob,V3
-c3,Approve,2020-01-23 00:00:00,ann,V2
-c4,Check,2020-02-02 00:00:00,cy,V1
-c2,Check,2020-01-11 00:00:00,bob,V3
-c3,Archive,2020-01-25 00:00:00,ann,V2
-c4,Approve,2020-02-05 00:00:00,cy,V1
+case,activity,timestamp,customer,resource,Variant
+c3,Check,2020-01-22 00:00:00,ann,emp2,V2
+c1,Register,2020-01-01 00:00:00,ann,emp1,V1
+c2,Register,2020-01-10 00:00:00,bob,emp1,V3
+c1,Approve,2020-01-04 00:00:00,ann,emp2,V1
+c4,Register,2020-02-01 00:00:00,cy,emp3,V1
+c3,Register,2020-01-20 00:00:00,ann,emp1,V2
+c1,Check,2020-01-02 00:00:00,ann,emp1,V1
+c2,Reject,2020-01-12 00:00:00,bob,emp2,V3
+c3,Approve,2020-01-23 00:00:00,ann,emp2,V2
+c4,Check,2020-02-02 00:00:00,cy,emp3,V1
+c2,Check,2020-01-11 00:00:00,bob,emp1,V3
+c3,Archive,2020-01-25 00:00:00,ann,emp1,V2
+c4,Approve,2020-02-05 00:00:00,cy,emp2,V1
