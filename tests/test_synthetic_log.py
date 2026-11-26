@@ -14,7 +14,7 @@ split by case start time has one obvious answer:
 import pandas as pd
 import pytest
 
-from src.data_loading import ACTIVITY, CASE_ID, TIMESTAMP
+from src.data_loading import ACTIVITY, CASE_ID, TIMESTAMP, RESOURCE
 from src.explore import compute_statistics
 
 
@@ -24,7 +24,7 @@ def activities(log, case):
 
 def test_synthetic_log_has_the_standard_columns(synthetic_log):
     # "Variant" in the CSV describes the whole case and must not be kept
-    assert list(synthetic_log.columns) == [CASE_ID, ACTIVITY, TIMESTAMP, "customer"]
+    assert list(synthetic_log.columns) == [CASE_ID, ACTIVITY, TIMESTAMP, RESOURCE, "customer"]
     assert pd.api.types.is_datetime64_any_dtype(synthetic_log[TIMESTAMP])
 
 

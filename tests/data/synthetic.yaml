@@ -8,6 +8,7 @@ columns:
   case_id: "case"
   activity: "activity"
   timestamp: "timestamp"
+  resource: "resource"
 
 timestamp_format: "%Y-%m-%d %H:%M:%S"
 
