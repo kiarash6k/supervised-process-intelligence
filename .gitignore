@@ -1,5 +1,4 @@
 # Event logs, not committed to git
-/data/*
 !/data/.gitkeep
 __pycache__/
 .venv/
