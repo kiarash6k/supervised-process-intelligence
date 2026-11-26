@@ -3,7 +3,7 @@ Prefixes
 """
 import pandas as pd
 
-from data_loading import CASE_ID, TIMESTAMP
+from src.data_loading import CASE_ID, TIMESTAMP
 REMAINING_TIME = "remaining_time"
 EVENTS = "events" # THERE is no
 
