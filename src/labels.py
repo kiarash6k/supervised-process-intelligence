@@ -6,7 +6,7 @@ from typing import cast
 
 import pandas as pd
 
-from data_loading import load_dataset, CASE_ID, TIMESTAMP
+from src.data_loading import load_dataset, CASE_ID, TIMESTAMP
 
 
 def append_completion_time_labels(data: pd.DataFrame) -> pd.DataFrame:
