@@ -1,7 +1,6 @@
 """
 Prefixes
 """
-import pm4py
 import pandas as pd
 
 from data_loading import CASE_ID, TIMESTAMP

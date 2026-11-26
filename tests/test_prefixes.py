@@ -1,3 +1,4 @@
+from prefixes import REMAINING_TIME
 from src.prefixes import extract_prefixes
 
 def test_extract_prefixes_returns_dataframe(synthetic_log):
@@ -17,10 +18,10 @@ def test_extract_prefixes_events_are_lists(synthetic_log):
     
     for idx in range(len(prefixes)):
         events = prefixes.iloc[idx]["events"]
-        assert isinstance(events, list), f"Row {idx}: events should be a list, got {type(events)}"
-        assert len(events) > 0, f"Row {idx}: events list should not be empty"
+        assert isinstance(events, list)
+        assert len(events) > 0
         for event in events:
-            assert isinstance(event, dict), f"Row {idx}: each event should be a dict"
+            assert isinstance(event, dict)
 
 
 def test_extract_prefixes_remaining_time_is_numeric(synthetic_log):
@@ -28,7 +29,7 @@ def test_extract_prefixes_remaining_time_is_numeric(synthetic_log):
     prefixes = extract_prefixes(synthetic_log)
     
     for idx in range(len(prefixes)):
-        remaining_time = prefixes.iloc[idx]["remaining_time"]
+        remaining_time = prefixes.iloc[idx][REMAINING_TIME]
         assert isinstance(remaining_time, (int, float)), f"Row {idx}: remaining_time should be numeric"
         assert remaining_time >= 0, f"Row {idx}: remaining_time should be non-negative"
 
