@@ -1,4 +1,4 @@
-from data_loading import CASE_ID, TIMESTAMP
+from src.data_loading import CASE_ID, TIMESTAMP
 from src.labels import append_completion_time_labels
 
 

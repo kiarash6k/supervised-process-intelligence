@@ -1,4 +1,4 @@
-from prefixes import REMAINING_TIME
+from src.prefixes import REMAINING_TIME
 from src.prefixes import extract_prefixes
 
 def test_extract_prefixes_returns_dataframe(synthetic_log):
