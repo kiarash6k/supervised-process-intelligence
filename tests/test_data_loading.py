@@ -15,11 +15,11 @@ from src.data_loading import (
     parse_timestamps,
     sort_events,
     standardize_columns,
-    validate_event_log,
+    validate_event_log, RESOURCE,
 )
 
 CONFIG = {
-    "columns": {"case_id": "case", "activity": "act", "timestamp": "time"},
+    "columns": {"case_id": "case", "activity": "act", "resource":"resource", "timestamp": "time"},
     "timestamp_format": "%Y-%m-%d %H:%M:%S",
 }
 
@@ -77,6 +77,7 @@ def test_standardize_columns_with_extra_column():
     data = {
         "case": ["c1", "c2"],
         "act": ["A", "B"],
+        "resource": ["r1", "r2"],
         "time": ["2020-01-01 10:00:00", "2020-01-02 10:00:00"],
         "customer": ["cust1", "cust2"],
     }
@@ -88,19 +89,20 @@ def test_standardize_columns_with_extra_column():
             "case_id": "case",
             "activity": "act",
             "timestamp": "time",
+            "resource": "resource",
         }
     }
 
     standardized_log = standardize_columns(event_log, config)
 
     # Check that the standardized columns are correct
-    assert list(standardized_log.columns) == [CASE_ID, ACTIVITY, TIMESTAMP, "customer"]
+    assert list(standardized_log.columns) == [CASE_ID, ACTIVITY, RESOURCE, TIMESTAMP, "customer"]
     assert standardized_log[CASE_ID].tolist() == ["c1", "c2"]
     assert standardized_log[ACTIVITY].tolist() == ["A", "B"]
     assert standardized_log["customer"].tolist() == ["cust1", "cust2"]
 
     # Check that the original DataFrame is unchanged
-    assert list(event_log.columns) == ["case", "act", "time", "customer"]
+    assert list(event_log.columns) == ["case", "act", "resource", "time", "customer"]
 
 
 def test_standardize_columns_with_helpdesk_names():
@@ -108,6 +110,7 @@ def test_standardize_columns_with_helpdesk_names():
         {
             "Case ID": ["Case 1"],
             "Activity": ["Assign seriousness"],
+            "Resource": ["User A"],
             "Complete Timestamp": ["2012/01/01 10:00:00.000"],
         }
     )
@@ -115,13 +118,14 @@ def test_standardize_columns_with_helpdesk_names():
         "columns": {
             "case_id": "Case ID",
             "activity": "Activity",
+            "resource": "Resource",
             "timestamp": "Complete Timestamp",
         }
     }
 
     standardized_log = standardize_columns(event_log, config)
 
-    assert list(standardized_log.columns) == [CASE_ID, ACTIVITY, TIMESTAMP]
+    assert list(standardized_log.columns) == [CASE_ID, ACTIVITY, RESOURCE, TIMESTAMP]
     assert standardized_log[ACTIVITY].tolist() == ["Assign seriousness"]
 
 
@@ -211,7 +215,7 @@ def test_sort_events_keeps_the_file_order_for_tied_timestamps():
 
 def test_validate_event_log_accepts_a_valid_log():
     event_log = pd.DataFrame(
-        {"case": ["c1"], "act": ["A"], "time": ["2020-01-01 10:00:00"]}
+        {"case": ["c1"], "act": ["A"], "resource":["2"], "time": ["2020-01-01 10:00:00"]}
     )
 
     validate_event_log(event_log, CONFIG)  # must not raise
@@ -225,7 +229,7 @@ def test_validate_event_log_rejects_an_empty_log():
 
 
 def test_validate_event_log_rejects_a_missing_column():
-    event_log = pd.DataFrame({"case": ["c1"], "time": ["2020-01-01 10:00:00"]})
+    event_log = pd.DataFrame({"case": ["c1"], "resource":"resource", "time": ["2020-01-01 10:00:00"]})
 
     with pytest.raises(EventLogError, match="act"):
         validate_event_log(event_log, CONFIG)
@@ -244,10 +248,10 @@ def write_dataset(tmp_path, static_attributes="[customer]"):
     """Write a small CSV log and its configuration; return the config path."""
     log_path = tmp_path / "log.csv"
     log_path.write_text(
-        "case,act,time,customer,Variant\n"
-        "c2,A,2020-01-01 09:00:00,bob,V1\n"
-        "c1,B,2020-01-02 10:00:00,ann,V2\n"
-        "c1,A,2020-01-01 10:00:00,ann,V2\n",
+        "case,act,resource,time,customer,Variant\n"
+        "c2,A,User B,2020-01-01 09:00:00,bob,V1\n"
+        "c1,B,User A,2020-01-02 10:00:00,ann,V2\n"
+        "c1,A,User A,2020-01-01 10:00:00,ann,V2\n",
         encoding="utf-8",
     )
     config_path = tmp_path / "dataset.yaml"
@@ -256,6 +260,7 @@ def write_dataset(tmp_path, static_attributes="[customer]"):
         "columns:\n"
         "  case_id: case\n"
         "  activity: act\n"
+        "  resource: resource\n"
         "  timestamp: time\n"
         'timestamp_format: "%Y-%m-%d %H:%M:%S"\n'
         f"static_attributes: {static_attributes}\n",
@@ -268,7 +273,7 @@ def test_load_dataset_normalizes_the_log(tmp_path):
     log = load_dataset(write_dataset(tmp_path))
 
     # standard names, static attributes kept, "Variant" dropped
-    assert list(log.columns) == [CASE_ID, ACTIVITY, TIMESTAMP, "customer"]
+    assert list(log.columns) == [CASE_ID, ACTIVITY,  TIMESTAMP,RESOURCE, "customer"]
     # sorted by case and time
     assert log[CASE_ID].tolist() == ["c1", "c1", "c2"]
     assert log[ACTIVITY].tolist() == ["A", "B", "A"]
@@ -294,6 +299,7 @@ def test_helpdesk_log_can_be_loaded_and_normalized():
         CASE_ID,
         ACTIVITY,
         TIMESTAMP,
+        RESOURCE,
         "customer",
         "product",
         "responsible_section",
