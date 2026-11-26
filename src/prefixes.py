@@ -6,7 +6,7 @@ import pandas as pd
 from src.data_loading import CASE_ID, TIMESTAMP
 REMAINING_TIME = "remaining_time"
 EVENTS = "events" # THERE is no
-
+PREFIX_LENGTH = "prefix_length"
 def extract_prefixes(data: pd.DataFrame, useDay=False)-> pd.DataFrame:
     """
     Extracts prefixes.
@@ -28,7 +28,7 @@ def extract_prefixes(data: pd.DataFrame, useDay=False)-> pd.DataFrame:
             group_as_dict = processed_group_cut.to_dict(orient='records')
             # very chuddy implementation
             prefix = {CASE_ID: [case_id], EVENTS: [group_as_dict],
-                      REMAINING_TIME: [(group[TIMESTAMP].max() - group_cut[TIMESTAMP].max()).total_seconds() / 3600 if not useDay else (group[TIMESTAMP].max() - group_cut[TIMESTAMP].max()).total_seconds() / 86400]}
+                      REMAINING_TIME: [(group[TIMESTAMP].max() - group_cut[TIMESTAMP].max()).total_seconds() / 3600 if not useDay else (group[TIMESTAMP].max() - group_cut[TIMESTAMP].max()).total_seconds() / 86400], PREFIX_LENGTH: [len(group_cut)]}
 
             prefixes = pd.concat([prefixes, pd.DataFrame(prefix)], ignore_index=True)
     return prefixes
