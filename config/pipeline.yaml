@@ -2,3 +2,6 @@
 # All randomness (splits, models, sampling) must use this seed so that the same
 # data and configuration always give the same metrics.
 seed: 42
+
+ridge:
+  alpha: 1.0
