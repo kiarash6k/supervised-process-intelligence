@@ -8,11 +8,12 @@
 
 ## Data
 
-The raw logs are not committed (`data/` is git-ignored). Place them in `data/`.
+The raw logs are stored in `data/`. The Helpdesk log is included in the repository, so
+it needs no separate download.
 
 **Helpdesk** (`data/help-desk-log.csv`): "Dataset belonging to the help desk log of an Italian Company",
 M. Polato, 4TU.ResearchData, 2017, DOI 10.4121/uuid:0c60edf1-6f83-4e75-9367-4c63b3e9d5bb.
-Original file name `help-desk-log.csv`. MD5: `a91d74377c55be5cbdfda05dae69db30`.
+Original file name `finale.csv`. MD5: `a91d74377c55be5cbdfda05dae69db30`.
 4,580 cases, 21,348 events, 14 activities. The code never modifies the raw file.
 
 
@@ -20,7 +21,7 @@ Original file name `help-desk-log.csv`. MD5: `a91d74377c55be5cbdfda05dae69db30`.
 
 Run all commands from the repository root with the dependencies installed.
 
-Run the tests (the Helpdesk test is skipped if `data/help-desk-log.csv` is missing):
+Run the tests (some of them read `data/help-desk-log.csv`):
 
     python -m pytest
 
@@ -44,11 +45,12 @@ Build the image:
 
     docker build -t spi-pipeline .
 
-Run the test suite inside the container:
+The raw logs are not part of the image, so mount `data/` into the container. Run the
+test suite inside it:
 
-    docker run --rm spi-pipeline
+    docker run --rm -v "$(pwd)/data:/app/data" spi-pipeline
 
-The raw logs are not part of the image. Mount them when you run the pipeline:
+The pipeline will run the same way, with its command appended:
 
     docker run --rm -v "$(pwd)/data:/app/data" spi-pipeline <pipeline command>
 
