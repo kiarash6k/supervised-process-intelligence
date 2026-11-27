@@ -30,8 +30,25 @@ and the case duration). The result is printed and saved to `artifacts/statistics
 
     python -m src.explore config/helpdesk.yaml
 
-The pipeline command (raw log to results table and plots) is added once the
-pipeline entry point exists.
+### Run the pipeline
+
+From the raw log to the errors of the mean baseline and the Ridge model:
+
+    python -m src.pipeline config/helpdesk.yaml
+
+It builds the prefixes with their remaining time in hours, splits the cases by start time,
+fits both models on the training cases and prints MAE and RMSE for the validation and test
+sets. It writes these files to `artifacts/` (change the folder with `--output`):
+
+- `results_<name>.csv`: the errors per model and set
+- `predictions_<name>.csv`: the true and predicted remaining time of every prefix
+- `split_<name>.json`: which case is in which set
+
+The split shares, the Ridge `alpha` and the seed are set in `config/pipeline.yaml`.
+Plots are not generated yet.
+
+Known limitation: training and validation cases that are still running when the next set
+starts are not removed yet (REQ-F15), so the errors are preliminary.
 
 ### Random seed
 
@@ -50,8 +67,7 @@ test suite inside it:
 
     docker run --rm -v "$(pwd)/data:/app/data" spi-pipeline
 
-The pipeline will run the same way, with its command appended:
+Run the pipeline. The second mount keeps the output files on your computer:
 
-    docker run --rm -v "$(pwd)/data:/app/data" spi-pipeline <pipeline command>
-
-The pipeline command is added once the pipeline entry point exists.
+    docker run --rm -v "$(pwd)/data:/app/data" -v "$(pwd)/artifacts:/app/artifacts" \
+        spi-pipeline python -m src.pipeline config/helpdesk.yaml
